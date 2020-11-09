@@ -15,6 +15,11 @@ namespace GamesCollection
             }
         }
 
+        public ColeccionVideojuegos()
+        {
+
+        }
+
         public void Añadir(Videojuego v)
         {
             lista.Insert(Posicion(v.Ano), v);

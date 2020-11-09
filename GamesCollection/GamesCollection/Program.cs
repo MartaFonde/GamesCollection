@@ -1,11 +1,14 @@
-﻿using System;
+﻿#define COLEC
+using System;
 using System.Collections.Generic;
 
 namespace GamesCollection
     
 {
+
     class Program
     {
+#if COLEC
         public static List<Videojuego> ColecInicial()
         {
             List<Videojuego> colec = new List<Videojuego>();
@@ -17,6 +20,7 @@ namespace GamesCollection
             colec.Add(j);
             return colec;
         }
+#endif
         public static void VisualizarLista(List<Videojuego> lista)
         {
             Console.WriteLine("-------------------------");
@@ -46,8 +50,12 @@ namespace GamesCollection
 
         static void Main(string[] args)
         {
+#if COLEC
             List<Videojuego> colec = ColecInicial();
             ColeccionVideojuegos juegos = new ColeccionVideojuegos(colec);
+#else
+            ColeccionVideojuegos juegos = new ColeccionVideojuegos();
+#endif
             int opcion = 0;
             int min = 0;
             int max = 0;
