@@ -19,26 +19,19 @@ namespace GamesCollection
         }
         public static void VisualizarLista(List<Videojuego> lista)
         {
-            if (lista.Count > 0)
+            Console.WriteLine("-------------------------");
+            for (int i = 0; i < lista.Count; i++)
             {
-                Console.WriteLine("----------------------------");
-                for (int i = 0; i < lista.Count; i++)
-                {
-                    Console.WriteLine("{0,4}\nTítulo: {1}\nAño: {2}\nGénero: {3}\n",
-                        i, lista[i].Titulo.Length > 8 ? lista[i].Titulo.Substring(0, 10) + "..." : lista[i].Titulo, lista[i].Ano, lista[i].Estilo);
-                    Console.WriteLine("----------------------------");
-                }
-            }
-            else
-            {
-                Console.WriteLine("La lista no contiene ningún videojuego");
-            }
+                Console.WriteLine("{0,10}\nTítulo: {1}\nAño: {2}\nGénero: {3}\n",
+                    i, lista[i].Titulo.Length > 8 ? lista[i].Titulo.Substring(0, 10) + "..." : lista[i].Titulo, lista[i].Ano, lista[i].Estilo);
+                Console.WriteLine("-------------------------");
+            }            
         }
         public static bool ListaVacia(List<Videojuego> lista)
         {
             if (lista.Count == 0)
             {
-                Console.WriteLine("La lista no contiene ningún videojuego");
+                Console.WriteLine("La colección no contiene ningún videojuego");
                 return true;
             }
             return false;
@@ -54,7 +47,7 @@ namespace GamesCollection
         static void Main(string[] args)
         {
             List<Videojuego> colec = ColecInicial();
-            ColeccionVideojuegos listaJuegos = new ColeccionVideojuegos(colec);
+            ColeccionVideojuegos juegos = new ColeccionVideojuegos(colec);
             int opcion = 0;
             int min = 0;
             int max = 0;
@@ -74,89 +67,108 @@ namespace GamesCollection
                 {
                     case 1:
                         Videojuego v = new Videojuego();
-                        listaJuegos.Añadir(v);
+                        juegos.Añadir(v);
                         Console.WriteLine(" *** Juego añadido a la lista ***");
                         break;
                     case 2:
-                        if (!ListaVacia(listaJuegos.lista))
+                        if (!ListaVacia(juegos.lista))
                         {
-                            Console.Write("Posición mínima: ");
-                            min = Videojuego.ValidacionNumero(0, listaJuegos.lista.Count - 1);
-                            Console.Write("Posición máxima: ");
-                            max = Videojuego.ValidacionNumero(0, listaJuegos.lista.Count - 1);
-
+                            do
+                            {
+                                Console.Write("Posición mínima: ");
+                                min = Videojuego.ValidacionNumero(0, juegos.lista.Count - 1);
+                                Console.Write("Posición máxima: ");
+                                max = Videojuego.ValidacionNumero(0, juegos.lista.Count - 1);
+                                if(min > max)
+                                {
+                                    Console.WriteLine("Error. La posición mínima no puede ser mayor que la máxima.");
+                                }
+                            } while (min > max);
+                            
                             int i = min;
                             Console.WriteLine("¿Deseas eliminar siguientes juegos? S/N");
-                            Console.WriteLine("----------------------------");
+                            Console.WriteLine("-------------------------");
                             while (i <= max)
                             {
-                                InfoJuego(listaJuegos.lista, i);
-                                Console.WriteLine("----------------------------");
+                                InfoJuego(juegos.lista, i);
+                                Console.WriteLine("-------------------------");
                                 i++;
                             }
-                            resp = Console.ReadLine().ToUpper();
-                            if (resp.Equals("S"))
+                            do 
                             {
-                                if (listaJuegos.Eliminar(max, min))
+                                resp = Console.ReadLine().ToUpper();
+                                if (resp.Equals("S"))
                                 {
-                                    Console.WriteLine(" *** Juegos eliminados ***");
+                                    if (juegos.Eliminar(max, min))
+                                    {
+                                        Console.WriteLine(" *** Juegos eliminados ***");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine(" *** Error al eliminar los juegos ***");
+                                    }
+
+                                }
+                                else if (resp.Equals("N"))
+                                {
+                                    Console.WriteLine(" *** Juegos no eliminados ***");
                                 }
                                 else
                                 {
-                                    Console.WriteLine(" *** Error al eliminar los juegos ***");
+                                    Console.WriteLine("Opción no válida");
                                 }
 
-                            }
-                            else if (resp.Equals("N"))
-                            {
-                                Console.WriteLine(" *** Juegos no eliminados ***");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Opción no válida");
-                            }
+                            } while (!resp.Equals("S") && !resp.Equals("N"));                                                                                                           
                         }
                         break;
                     case 3:
-                        if (!ListaVacia(listaJuegos.lista))
+                        if (!ListaVacia(juegos.lista))
                         {
-                            VisualizarLista(listaJuegos.lista);
+                            VisualizarLista(juegos.lista);
                         }
                         break;
                     case 4:
-                        if (!ListaVacia(listaJuegos.lista))
+                        if (!ListaVacia(juegos.lista))
                         {
                             Console.Write("Estilo: ");
-                            List<Videojuego> listEst = listaJuegos.Busqueda(Videojuego.ValidacionEstilo());
-                            VisualizarLista(listEst);
-                        }
-                        break;
-                    case 5:
-                        if (!ListaVacia(listaJuegos.lista))
-                        {
-                            Console.Write("Posición del juego a modificar: ");
-                            pos = Videojuego.ValidacionNumero(0, listaJuegos.lista.Count - 1);
-                            Console.Write("¿Deseas modificar el siguiente juego? S/N\n");
-                            InfoJuego(listaJuegos.lista, pos);
-                            resp = Console.ReadLine().ToUpper();
-                            if (resp.Equals("S"))
+                            List<Videojuego> listEst = juegos.Busqueda(Videojuego.ValidacionEstilo());
+                            if(listEst.Count > 0)
                             {
-                                Console.Write("Título: ");
-                                listaJuegos.lista[pos].Titulo = Console.ReadLine().ToUpper();
-                                Console.Write("Año: ");
-                                listaJuegos.lista[pos].Ano = Videojuego.ValidacionNumero(max: DateTime.Now.Year);
-                                Console.Write("Género: ");
-                                listaJuegos.lista[pos].Estilo = Videojuego.ValidacionEstilo();
-                                Console.WriteLine(" *** Juego modificado ***");
-                            }
-                            else if (resp.Equals("N"))
-                            {
-                                Console.WriteLine(" *** Juego no modificado ***");
+                                VisualizarLista(listEst);
                             }
                             else
                             {
-                                Console.WriteLine("Opción no válida");
+                                Console.WriteLine("La colección no contiene ningún videojuego de ese estilo");
                             }
+                        }
+                        break;
+                    case 5:
+                        if (!ListaVacia(juegos.lista))
+                        {
+                            Console.Write("Posición del juego a modificar: ");
+                            pos = Videojuego.ValidacionNumero(0, juegos.lista.Count - 1);
+                            Console.Write("¿Deseas modificar el siguiente juego? S/N\n");
+                            InfoJuego(juegos.lista, pos);
+                            do
+                            {
+                                resp = Console.ReadLine().ToUpper();
+                                if (resp.Equals("S"))
+                                {
+                                    juegos.lista.RemoveAt(pos);
+                                    Videojuego j = new Videojuego();                                    
+                                    pos = juegos.Posicion(j.Ano);
+                                    juegos.lista.Insert(pos, j);                                    
+                                    Console.WriteLine(" *** Juego modificado ***");
+                                }
+                                else if (resp.Equals("N"))
+                                {
+                                    Console.WriteLine(" *** Juego no modificado ***");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Opción no válida");
+                                }
+                            } while (!resp.Equals("S") && !resp.Equals("N"));                            
                         }
                         break;
                     default:

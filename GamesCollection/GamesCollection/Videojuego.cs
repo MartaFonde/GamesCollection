@@ -87,17 +87,17 @@ namespace GamesCollection
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("El dato introducido no es un número");
+                    Console.WriteLine("Error. El dato introducido no es un número");
                     valido = false;
                 }
                 catch (ArgumentException)
                 {
-                    Console.WriteLine("Valor no válido, no cumple con el rango permitido (" + min + "-" + max + ")");
+                    Console.WriteLine("Error. El Valor no cumple con el rango permitido (" + min + "-" + max + ")");
                     valido = false;
                 }
                 catch (OverflowException)
                 {
-                    Console.WriteLine("Dato no válido");
+                    Console.WriteLine("Error. Dato no válido");
                     valido = false;
                 }
             }
@@ -120,7 +120,7 @@ namespace GamesCollection
                         return (Estilo)i;
                     }
                 }
-                Console.WriteLine("Error. Estilo no válido. Los posibles estilos de la colección son:\n" + string.Join(',', estilos));
+                Console.WriteLine("Error. Estilo no válido. Los estilos admitidos para esta colección son:\n" + string.Join(',', estilos));
             }
             return e;
         }
